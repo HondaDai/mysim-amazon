@@ -69,7 +69,7 @@ def state_all():
   return [i.state for i in get_all_instances()]
 
 def status_all():
-  return {i.tags['Name']:i.state for i in get_all_instances()}
+  return {i.tags['Name']:[i.state, i.ip_address] for i in get_all_instances()}
 
 def get_all_names():
   return [i.tags['Name'] for i in get_all_instances()]
