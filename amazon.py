@@ -68,8 +68,16 @@ def start_all():
 def state_all():
   return [i.state for i in get_all_instances()]
 
+def get_all_names():
+  return [i.tags['Name'] for i in get_all_instances()]
+
 def get_instance(name):
   return [i for i in get_all_instances() if i.tags['Name'] == name][0]
+
+def wait_state(name, state):
+  while get_instance(name).state != state:
+    time.sleep(2)
+  return True
 
 # def postgres_ip():
 #   return get_instance('Postgres').ip_address
@@ -77,10 +85,16 @@ def get_instance(name):
 # def reload():
 #   execfile('amazon.py')
 
-def ssh_to(name):
+def ssh_to(name, autostart=False):
+  if autostart:
+    get_instance(name).start()
+    wait_state(name, 'running')
   os.system("ssh -i /Volumes/Transcend/ns-allinone-3.21/aws-ec2.pem ubuntu@%s" % (get_instance(name).ip_address) )
 
-def sftp_to(name):
+def sftp_to(name, autostart=False):
+  if autostart:
+    get_instance(name).start()
+    wait_state(name, 'running')
   os.system("sftp -i /Volumes/Transcend/ns-allinone-3.21/aws-ec2.pem ubuntu@%s" % (get_instance(name).ip_address) )
 
 # ssh_to("Postgres")
